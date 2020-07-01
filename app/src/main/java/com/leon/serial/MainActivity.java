@@ -14,24 +14,20 @@ import androidx.core.app.ActivityCompat;
 
 public class MainActivity extends AppCompatActivity {
     final int READ_PHONE_STATE = 911;
-
     @SuppressLint("HardwareIds")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MainActivity.this,
-                    new String[]{Manifest.permission.READ_PHONE_STATE},
-                    READ_PHONE_STATE);
+                    new String[]{Manifest.permission.READ_PHONE_STATE}, READ_PHONE_STATE);
             return;
         }
-        String serial = Build.SERIAL;
-        AppCompatTextView appCompatTextView = findViewById(R.id.textViewSerial);
-        appCompatTextView.setText(serial);
+        setSerial();
     }
 
-    @SuppressLint("HardwareIds")
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String[] permissions,
@@ -40,14 +36,22 @@ public class MainActivity extends AppCompatActivity {
 
         if (requestCode == READ_PHONE_STATE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                String serial = Build.SERIAL;
-                AppCompatTextView appCompatTextView = findViewById(R.id.textViewSerial);
-                appCompatTextView.setText(serial);
+                setSerial();
 
             } else {
                 Toast.makeText(MainActivity.this, "Read Phone State Permission Denied", Toast.LENGTH_SHORT).show();
                 finishAffinity();
             }
         }
+    }
+
+    @SuppressLint("HardwareIds")
+    void setSerial() {
+        String serial = Build.SERIAL;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            serial = Build.getSerial();
+        }
+        AppCompatTextView appCompatTextView = findViewById(R.id.textViewSerial);
+        appCompatTextView.setText(serial);
     }
 }
