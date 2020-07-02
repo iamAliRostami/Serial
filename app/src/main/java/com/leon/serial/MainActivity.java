@@ -64,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
         }
         if (serial.equals(UNKNOWN))
             serial = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
         AppCompatTextView appCompatTextView = findViewById(R.id.textViewSerial);
         appCompatTextView.setText(serial);
 
